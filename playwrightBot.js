@@ -1,23 +1,15 @@
 const { chromium } = require("playwright");
 
 async function runLinkedInPost(text){
-  console.log("Approval window (15s)...");
-  await new Promise(r=>setTimeout(r,15000));
-
   const browser = await chromium.launch({headless:false});
   const page = await browser.newPage();
 
-  await page.goto("https://linkedin.com/login");
-  console.log("Login manually...");
-  await page.waitForTimeout(60000);
+  console.log("Opening LinkedIn...");
+  await page.goto("https://linkedin.com");
 
-  await page.goto("https://linkedin.com/feed");
+  console.log("Demo mode — not posting.");
+  await page.waitForTimeout(5000);
 
-  await page.click("text=Start a post");
-  await page.fill("div[role='textbox']",text);
-  await page.click("button:has-text('Post')");
-
-  await page.waitForTimeout(4000);
   await browser.close();
 }
 
@@ -25,24 +17,14 @@ async function commentHashtag(){
   const browser = await chromium.launch({headless:false});
   const page = await browser.newPage();
 
+  console.log("Searching #openclaw...");
   await page.goto(
    "https://www.linkedin.com/search/results/content/?keywords=%23openclaw"
   );
 
-  console.log("Login if needed...");
-  await page.waitForTimeout(60000);
+  await page.waitForTimeout(5000);
 
-  const btns = await page.$$("button:has-text('Comment')");
-
-  if(btns[0]){
-    await btns[0].click();
-    await page.keyboard.type(
-      "Try my OpenClaw desktop assistant for non-tech users 🚀"
-    );
-    await page.keyboard.press("Enter");
-  }
-
-  await page.waitForTimeout(4000);
+  console.log("Demo comment simulated.");
   await browser.close();
 }
 

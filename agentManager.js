@@ -1,7 +1,7 @@
 const db = require("./db");
 
 function createAgent(agent){
-  return db.prepare(`
+  db.prepare(`
     INSERT INTO agents(name,config,schedule,sandbox)
     VALUES (?,?,?,?)
   `).run(
