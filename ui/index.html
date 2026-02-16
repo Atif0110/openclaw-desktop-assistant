@@ -1,31 +1,152 @@
+<!DOCTYPE html>
 <html>
+<head>
+<meta charset="UTF-8">
+<title>Personaliz Assistant</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Segoe UI, sans-serif;
+  background:linear-gradient(135deg,#1e1e2f,#2c2c54);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  color:white;
+}
+
+#app{
+  width:420px;
+  height:600px;
+  background:#0f172a;
+  border-radius:16px;
+  display:flex;
+  flex-direction:column;
+  box-shadow:0 20px 40px rgba(0,0,0,0.5);
+  overflow:hidden;
+}
+
+#header{
+  padding:18px;
+  font-size:20px;
+  font-weight:600;
+  background:#020617;
+  border-bottom:1px solid #1f2937;
+}
+
+#chat{
+  flex:1;
+  padding:15px;
+  overflow-y:auto;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.msg{
+  padding:10px 14px;
+  border-radius:14px;
+  max-width:75%;
+  line-height:1.4;
+  font-size:14px;
+}
+
+.user{
+  background:#2563eb;
+  align-self:flex-end;
+}
+
+.bot{
+  background:#1f2937;
+  align-self:flex-start;
+}
+
+#inputArea{
+  display:flex;
+  border-top:1px solid #1f2937;
+}
+
+#msg{
+  flex:1;
+  padding:14px;
+  border:none;
+  outline:none;
+  font-size:14px;
+  background:#020617;
+  color:white;
+}
+
+button{
+  background:#22c55e;
+  border:none;
+  padding:0 20px;
+  font-size:15px;
+  cursor:pointer;
+  color:white;
+}
+
+button:hover{
+  background:#16a34a;
+}
+</style>
+</head>
+
 <body>
 
-<h2>Personaliz Assistant</h2>
+<div id="app">
 
-<input id="msg"/>
-<button onclick="send()">Send</button>
+  <div id="header">
+    🤖 Personaliz Assistant
+  </div>
 
-<pre id="chat"></pre>
+  <div id="chat"></div>
+
+  <div id="inputArea">
+    <input id="msg" placeholder="Type a message..." />
+    <button onclick="send()">Send</button>
+  </div>
+
+</div>
 
 <script>
-async function send(){
-  const msg=document.getElementById("msg").value;
 
-  const r=await fetch(
-    "http://localhost:3001/chat",
-    {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({message:msg})
-    }
-  );
+const chatDiv=document.getElementById("chat");
+const input=document.getElementById("msg");
+
+function addMessage(text,cls){
+  const div=document.createElement("div");
+  div.className="msg "+cls;
+  div.innerText=text;
+  chatDiv.appendChild(div);
+  chatDiv.scrollTop=chatDiv.scrollHeight;
+}
+
+async function send(){
+  const text=input.value.trim();
+  if(!text) return;
+
+  addMessage(text,"user");
+  input.value="";
+
+  addMessage("Typing...","bot");
+
+  const r=await fetch("http://localhost:3001/chat",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({message:text})
+  });
 
   const d=await r.json();
 
-  document.getElementById("chat").innerText+=
-   "\nYou: "+msg+"\nAI: "+d.reply+"\n";
+  chatDiv.lastChild.remove(); // remove "Typing..."
+  addMessage(d.reply,"bot");
 }
+
+input.addEventListener("keydown",e=>{
+  if(e.key==="Enter") send();
+});
+
 </script>
 
 </body>
