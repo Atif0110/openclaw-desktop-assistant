@@ -10,16 +10,17 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+/* ---------------- MEMORY FOR APPROVAL FLOW ---------------- */
 let pendingAgent = null;
 
-/* ---------------- CHAT ---------------- */
+/* ---------------- CHAT ROUTE ---------------- */
 
-app.post("/chat", async (req,res)=>{
+app.post("/chat", async (req, res) => {
   const msg = req.body.message.toLowerCase().trim();
   console.log("CHAT:", msg);
 
-  /* SETUP */
-  if(msg.includes("setup")){
+  /* ---------------- SETUP ---------------- */
+  if (msg.includes("setup")) {
     return res.json({
       reply:
         "Detecting OS...\n" +
@@ -30,14 +31,14 @@ app.post("/chat", async (req,res)=>{
     });
   }
 
-  /* CREATE TRENDING AGENT */
-  if(msg.includes("trending")){
+  /* ---------------- CREATE TRENDING AGENT ---------------- */
+  if (msg.includes("trending")) {
     pendingAgent = {
-      name:"TrendingAgent",
-      type:"post",
-      content:"Posting about trending OpenClaw topics 🚀",
-      schedule:"*/5 * * * *",
-      sandbox:1
+      name: "TrendingAgent",
+      type: "post",
+      content: "Posting about trending OpenClaw topics 🚀",
+      schedule: "*/5 * * * *",
+      sandbox: 1
     };
 
     return res.json({
@@ -50,14 +51,14 @@ app.post("/chat", async (req,res)=>{
     });
   }
 
-  /* CREATE HASHTAG AGENT */
-  if(msg.includes("hashtag")){
+  /* ---------------- CREATE HASHTAG AGENT ---------------- */
+  if (msg.includes("hashtag")) {
     pendingAgent = {
-      name:"HashtagAgent",
-      type:"comment",
-      content:"#openclaw promo",
-      schedule:"*/10 * * * *",
-      sandbox:1
+      name: "HashtagAgent",
+      type: "comment",
+      content: "#openclaw promo",
+      schedule: "*/10 * * * *",
+      sandbox: 1
     };
 
     return res.json({
@@ -70,43 +71,51 @@ app.post("/chat", async (req,res)=>{
     });
   }
 
-  /* APPROVE */
-  if(msg==="approve" && pendingAgent){
+  /* ---------------- APPROVE ---------------- */
+  if (msg === "approve" && pendingAgent) {
     createAgent(pendingAgent);
     pendingAgent = null;
 
-    return res.json({reply:"Agent deployed ✅"});
+    return res.json({ reply: "Agent deployed successfully ✅" });
   }
 
-  /* CANCEL */
-  if(msg==="cancel"){
-    pendingAgent=null;
-    return res.json({reply:"Cancelled."});
+  /* ---------------- CANCEL ---------------- */
+  if (msg === "cancel" && pendingAgent) {
+    pendingAgent = null;
+    return res.json({ reply: "Agent creation cancelled." });
   }
 
-  /* FALLBACK LLM */
+  /* ---------------- FALLBACK TO LLM ---------------- */
   const reply = await chat(req.body.message);
-  res.json({reply});
+  res.json({ reply });
 });
 
-/* SETTINGS */
+/* ---------------- SETTINGS ---------------- */
 
-app.post("/setKey",(req,res)=>{
+app.post("/setKey", (req, res) => {
   db.prepare(
-   "INSERT OR REPLACE INTO settings(key,value) VALUES('apiKey',?)"
+    "INSERT OR REPLACE INTO settings(key,value) VALUES('apiKey',?)"
   ).run(req.body.key);
   res.sendStatus(200);
 });
 
-/* LOGS */
+/* ---------------- DIRECT AGENT API ---------------- */
 
-app.get("/logs",(req,res)=>{
+app.post("/createAgent", (req, res) => {
+  createAgent(req.body);
+  res.sendStatus(200);
+});
+
+/* ---------------- LOGS ---------------- */
+
+app.get("/logs", (req, res) => {
   res.json(db.prepare("SELECT * FROM logs").all());
 });
 
-/* START */
+/* ---------------- START SERVER ---------------- */
 
-app.listen(3001,()=>{
+app.listen(3001, () => {
   startScheduler();
+  console.log("Scheduler started");
   console.log("Server running 3001");
 });
