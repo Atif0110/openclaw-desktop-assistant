@@ -61,19 +61,8 @@ The goal of the system is to reduce repetitive digital work and explore how **LL
 - Lightweight UI for interacting with the assistant
 
 ---
-openclaw-desktop-assistant/
-│
-├── server.js              # Main application server
-├── agentManager.js        # Agent orchestration logic
-├── llmRouter.js           # Routes prompts to different LLM providers
-├── playwrightBot.js       # Browser automation workflows
-├── scheduler.js           # Task scheduling system
-├── db.js                  # Database management
-│
-├── ui/                    # Frontend interface
-│
-├── package.json
-└── package-lock.json
+<img width="831" height="457" alt="image" src="https://github.com/user-attachments/assets/cd590eb7-6646-47b4-8251-05958d2a20ce" />
+
 
 ---
 
