@@ -63,18 +63,17 @@ The goal of the system is to reduce repetitive digital work and explore how **LL
 ---
 openclaw-desktop-assistant/
 │
-├── server.js # Main application server
-├── agentManager.js # Agent orchestration logic
-├── llmRouter.js # Routes prompts to different LLM providers
-├── playwrightBot.js # Browser automation workflows
-├── scheduler.js # Task scheduling system
-├── db.js # Database management
+├── server.js              # Main application server
+├── agentManager.js        # Agent orchestration logic
+├── llmRouter.js           # Routes prompts to different LLM providers
+├── playwrightBot.js       # Browser automation workflows
+├── scheduler.js           # Task scheduling system
+├── db.js                  # Database management
 │
-├── ui/ # Frontend interface
+├── ui/                    # Frontend interface
 │
 ├── package.json
 └── package-lock.json
-
 
 ---
 
