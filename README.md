@@ -1,425 +1,235 @@
-# 🐾 OpenClaw — AI Agent Automation System
+# 🐾 OpenClaw — AI-Powered Desktop Automation Agent
 
-OpenClaw is a lightweight **LLM-powered automation platform** that converts natural language instructions into executable automation agents capable of running browser workflows and scheduled tasks.
+> Describe a task in plain English. OpenClaw turns it into a scheduled, browser-executable automation agent — with your approval before anything runs.
 
-Users describe a task in plain English, and OpenClaw automatically creates a structured automation agent that can safely execute browser actions with **human approval and sandbox testing**.
+![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?logo=node.js&logoColor=white)
+![Playwright](https://img.shields.io/badge/Playwright-Chromium-2EAD33?logo=playwright&logoColor=white)
+![License](https://img.shields.io/badge/License-ISC-blue)
+![Status](https://img.shields.io/badge/Status-Active-brightgreen)
 
-> OpenClaw bridges **Large Language Models and real-world automation**.
-
----
-
-# 🚀 Overview
-
-OpenClaw acts as an **AI-powered desktop automation assistant**.
-
-Instead of writing scripts manually, users simply describe a task and the system will:
-
-1. Interpret the request using an LLM
-2. Generate an automation agent
-3. Ask for user approval
-4. Schedule the task
-5. Execute browser automation
-6. Log execution activity
-
-This enables **safe and controlled automation with human-in-the-loop verification**.
+OpenClaw is a lightweight **LLM-powered automation platform** that converts natural language into executable browser agents with built-in human approval, sandbox testing, and cron scheduling — all running locally on your machine.
 
 ---
 
-# ❓ Why OpenClaw?
-
-Traditional automation tools often require:
-
-• writing scripts
-• configuring schedulers
-• maintaining automation logic
-
-OpenClaw simplifies this workflow.
-
-Users can simply:
-
-✔ Describe tasks in natural language
-✔ Preview automation agents before execution
-✔ Test automation safely in sandbox mode
-✔ Schedule recurring workflows automatically
-
-The platform combines **LLMs + automation + scheduling + safety controls** into a single lightweight system.
-
----
-
-# ✨ Key Features
-
-### 🤖 Intelligent LLM Routing
-
-OpenClaw automatically selects the appropriate model depending on configuration.
-
-| Model                  | Use Case                |
-| ---------------------- | ----------------------- |
-| **Ollama phi3:mini**   | Local offline inference |
-| **OpenAI gpt-4o-mini** | Cloud-powered reasoning |
-
-This enables:
-
-• Offline capability
-• Cost efficiency
-• Flexible deployment
-
----
-
-### 🌐 Browser Automation
-
-OpenClaw uses **Playwright** to automate real browser workflows such as:
-
-• LinkedIn posting
-• Comment automation
-• Web navigation
-• Content publishing
-
-All actions execute inside a **Chromium browser instance**.
-
----
-
-### ✅ Human-in-the-Loop Approval
-
-Every automation agent must be approved before execution.
-
-Example preview:
-
-```
-Agent Preview
-
-Goal: Post trending OpenClaw topics
-Schedule: Every 5 minutes
-Sandbox Mode: ON
-
-Type 'approve' or 'cancel'
-```
-
-This prevents accidental automation.
-
----
-
-### 🧪 Sandbox Testing Mode
-
-OpenClaw allows agents to be tested safely before running real automation.
-
-| Mode    | Behavior                |
-| ------- | ----------------------- |
-| Sandbox | Simulated execution     |
-| Live    | Full browser automation |
-
----
-
-### ⏰ Automated Scheduler
-
-A background scheduler continuously checks for active agents and executes them automatically.
-
-Powered by:
-
-• **node-cron**
-
----
-
-### 🗄 Persistent Storage
-
-OpenClaw uses **SQLite** to store:
-
-• API keys
-• agent configurations
-• execution logs
-
----
-
-# 🧠 System Architecture
-
+## 🧠 How It Works
 ```
 User Input (Natural Language)
-            │
-            ▼
-        LLM Router
-   (Ollama / OpenAI)
-            │
-            ▼
-       Agent Generator
-            │
-            ▼
-   Human Approval System
-            │
-            ▼
-        Task Scheduler
-            │
-            ▼
-     Playwright Automation
-            │
-            ▼
-         Execution Logs
-            │
-            ▼
-          SQLite DB
+          │
+          ▼
+      LLM Router
+ (Ollama phi3:mini / OpenAI gpt-4o-mini)
+          │
+          ▼
+   Agent Generator
+          │
+          ▼
+ Human Approval Preview  ◄── you approve or cancel
+          │
+          ▼
+    node-cron Scheduler
+          │
+          ▼
+  Playwright Browser Automation
+          │
+          ▼
+   Execution Logs → SQLite
 ```
 
 ---
 
-# 🧰 Tech Stack
+## ✨ Features
 
-### Backend
-
-• Node.js
-• Express
-• CORS
-
-### AI / LLM
-
-• Ollama (local models)
-• OpenAI API
-
-### Browser Automation
-
-• Playwright (Chromium automation)
-
-### Scheduler
-
-• node-cron
-
-### Database
-
-• SQLite (better-sqlite3)
-
-### Frontend
-
-• Lightweight HTML interface
+| Feature | Description |
+|---|---|
+| 🤖 **LLM Routing** | Auto-selects Ollama (offline) or OpenAI based on whether an API key is set |
+| ✅ **Human-in-the-Loop** | Every agent shows a preview and requires `approve` before deploying |
+| 🧪 **Sandbox Mode** | Simulated dry-run execution before going live |
+| ⏰ **Cron Scheduler** | Background scheduler via `node-cron` runs agents on defined intervals |
+| 🌐 **Browser Automation** | Playwright drives a real Chromium instance for web workflows |
+| 🗄 **Persistent Storage** | SQLite stores API keys, agent configs, and execution logs |
+| 💬 **Chat Interface** | Lightweight HTML UI for conversational agent creation |
 
 ---
 
-# 📂 Project Structure
-
+## 🏗 Project Structure
 ```
 openclaw-desktop-assistant/
-
-server.js
-llmRouter.js
-agentManager.js
-scheduler.js
-playwrightBot.js
-db.js
-
-ui/
- └── index.html
-
-data/
- └── app.db
-
-package.json
+│
+├── server.js           # Express server, API routes, approval flow
+├── llmRouter.js        # Auto-routes between Ollama and OpenAI
+├── agentManager.js     # Creates and retrieves agents from SQLite
+├── scheduler.js        # node-cron task runner
+├── playwrightBot.js    # Chromium browser automation logic
+├── db.js               # SQLite schema initialization
+│
+├── ui/
+│   └── index.html      # Chat interface
+│
+├── data/
+│   └── app.db          # Auto-generated SQLite database
+│
+└── package.json
 ```
-
-### File Responsibilities
-
-| File             | Responsibility                 |
-| ---------------- | ------------------------------ |
-| server.js        | Express server & API routes    |
-| llmRouter.js     | LLM routing logic              |
-| agentManager.js  | Agent creation & management    |
-| scheduler.js     | Task execution scheduler       |
-| playwrightBot.js | Browser automation logic       |
-| db.js            | SQLite database initialization |
 
 ---
 
-# ⚙️ Installation
+## ⚙️ Installation & Setup
 
-## Prerequisites
+### Prerequisites
 
-• Node.js v18+
-• Ollama installed locally
-
-Download Ollama:
-
-https://ollama.com/download
-
-Pull the local model:
-
-```
+- Node.js v18+
+- [Ollama](https://ollama.com/download) installed locally (for offline mode)
+```bash
+# Pull the local model
 ollama pull phi3:mini
 ```
 
----
-
-# 📦 Setup
-
-Clone the repository:
-
-```
+### 1. Clone the repository
+```bash
 git clone https://github.com/Atif0110/openclaw-desktop-assistant.git
 cd openclaw-desktop-assistant
 ```
 
-Install dependencies:
-
-```
+### 2. Install dependencies
+```bash
 npm install
 ```
 
-Install Playwright browsers:
-
-```
+### 3. Install Playwright browser
+```bash
 npx playwright install chromium
 ```
 
----
+### 4. (Optional) Set an OpenAI API key
 
-# ▶️ Running the Application
-
-Start the server:
-
-```
-node server.js
-```
-
-Server runs at:
-
-```
-http://localhost:3001
-```
-
-Open the UI:
-
-```
-ui/index.html
-```
-
----
-
-# 📡 API Endpoints
-
-| Method | Endpoint     | Description               |
-| ------ | ------------ | ------------------------- |
-| POST   | /chat        | Send message to assistant |
-| POST   | /setKey      | Store OpenAI API key      |
-| POST   | /createAgent | Create agent via JSON     |
-| GET    | /logs        | Retrieve execution logs   |
-
----
-
-# 📌 Example API Usage
-
-### Chat Request
-
-```
-curl -X POST http://localhost:3001/chat \
--H "Content-Type: application/json" \
--d '{"message": "create a trending agent"}'
-```
-
-### Set API Key
-
-```
+If no key is set, OpenClaw automatically falls back to the local Ollama model.
+```bash
 curl -X POST http://localhost:3001/setKey \
 -H "Content-Type: application/json" \
 -d '{"key": "sk-your-openai-key"}'
 ```
 
+### 5. Start the server
+```bash
+node server.js
+# or
+npm start
+```
+
+Server runs at `http://localhost:3001`. Open `ui/index.html` in your browser.
+
 ---
 
-# 🤖 Example Agent Workflow
+## 📡 API Reference
 
-User:
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/chat` | Send a natural language message to the assistant |
+| `POST` | `/setKey` | Store your OpenAI API key in SQLite |
+| `POST` | `/createAgent` | Directly create an agent via JSON payload |
+| `GET` | `/logs` | Retrieve all execution logs |
 
+---
+
+## 💬 Example Workflow
+
+**1. User sends a message:**
 ```
 create a trending agent
 ```
 
-Assistant:
-
+**2. OpenClaw previews the agent:**
 ```
 Trending LinkedIn Agent Preview
 
 Goal: Post trending OpenClaw topics
 Schedule: Every 5 minutes
 Sandbox: ON
+
+Type 'approve' or 'cancel'
 ```
 
-User:
-
+**3. User approves:**
 ```
 approve
 ```
 
-Assistant:
-
+**4. Agent is deployed and scheduled:**
 ```
-Agent deployed successfully
+Agent deployed successfully ✅
 ```
 
 ---
 
-# 🗃 Database Schema
-
-```
+## 🗃 Database Schema
+```sql
 CREATE TABLE settings (
- key TEXT PRIMARY KEY,
- value TEXT
+  key   TEXT PRIMARY KEY,
+  value TEXT
 );
 
 CREATE TABLE agents (
- id INTEGER PRIMARY KEY,
- name TEXT,
- config TEXT,
- schedule TEXT,
- sandbox INTEGER
+  id       INTEGER PRIMARY KEY,
+  name     TEXT,
+  config   TEXT,
+  schedule TEXT,
+  sandbox  INTEGER
 );
 
 CREATE TABLE logs (
- id INTEGER PRIMARY KEY,
- agent_id INTEGER,
- message TEXT,
- created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+  id         INTEGER PRIMARY KEY,
+  agent_id   INTEGER,
+  message    TEXT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 ```
 
 ---
 
-# 🛣 Roadmap
+## 🛠 Tech Stack
 
-Planned improvements:
-
-• Support additional automation agent types
-• Per-agent cron scheduling
-• Authentication system
-• Web dashboard for managing agents
-• Real-time execution log streaming
-
-Future LLM integrations:
-
-• Anthropic Claude
-• Google Gemini
-• Additional local models
+| Layer | Technology |
+|---|---|
+| **Server** | Node.js, Express, CORS |
+| **LLM (local)** | Ollama — `phi3:mini` |
+| **LLM (cloud)** | OpenAI — `gpt-4o-mini` |
+| **Browser Automation** | Playwright (Chromium) |
+| **Scheduler** | node-cron |
+| **Database** | SQLite via `better-sqlite3` |
+| **Frontend** | HTML/CSS (no framework) |
 
 ---
 
-# 🤝 Contributing
+## 🛣 Roadmap
 
-Contributions are welcome.
+- [ ] Per-agent custom cron expressions from natural language
+- [ ] Real-time execution log streaming in the UI
+- [ ] Authentication & multi-user support
+- [ ] Web dashboard for managing all agents
+- [ ] Additional LLM support: Anthropic Claude, Google Gemini
+- [ ] Support for more automation agent types beyond LinkedIn
 
-Steps:
+---
+
+## 🤝 Contributing
+
+Contributions are welcome!
 
 1. Fork the repository
-2. Create a feature branch
-3. Submit a pull request
+2. Create a feature branch (`git checkout -b feature/my-feature`)
+3. Commit your changes
+4. Submit a pull request
 
 ---
 
-# 📄 License
+## 👤 Author
 
-ISC License
+**Atif** — [GitHub](https://github.com/Atif0110)
 
-See the LICENSE file for details.
+Built with Node.js, Playwright, and local-first AI automation.
 
 ---
 
-# 👨‍💻 Author
+## 📄 License
 
-**Atif**
-
-GitHub
-https://github.com/Atif0110
-
-Built using **Node.js, Playwright, and AI automation**.
+ISC License. See `LICENSE` for details.
